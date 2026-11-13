@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "pr-sentinel": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "${workspaceFolder}/mcp-server",
+      "envFile": "${workspaceFolder}/mcp-server/.env"
+    }
+  }
+}
