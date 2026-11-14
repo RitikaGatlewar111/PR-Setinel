@@ -237,6 +237,23 @@ app.post("/api/analyze-pr", async (request, response) => {
   }
 });
 
+// Serve the React frontend in production
+app.use(express.static(path.join(projectDirectory, "dist")));
+
+// Handle React frontend routes
+app.use((request, response, next) => {
+  if (
+    request.method === "GET" &&
+    !request.path.startsWith("/api")
+  ) {
+    response.sendFile(
+      path.join(projectDirectory, "dist", "index.html")
+    );
+    return;
+  }
+
+  next();
+});
 app.use((error, _request, response, _next) => {
   if (error?.type === "entity.too.large") {
     response.status(413).json({
