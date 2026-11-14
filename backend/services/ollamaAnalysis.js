@@ -1,9 +1,10 @@
+
 const DEFAULT_OLLAMA_URL = "http://localhost:11434";
 const DEFAULT_OLLAMA_MODEL = "qwen2.5-coder:3b";
 const DEFAULT_INPUT_LIMIT = 90_000;
 const DEFAULT_TIMEOUT_MS = 180_000;
 
-const reportSchema = {
+export const reportSchema = {
   type: "object",
   additionalProperties: false,
   required: [
@@ -91,7 +92,7 @@ export function getOllamaConfig(env = process.env) {
   };
 }
 
-function redactSecrets(value) {
+export function redactSecrets(value) {
   return value
     .replace(/-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g, "[REDACTED PRIVATE KEY]")
     .replace(/\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16})\b/g, "[REDACTED SECRET]")
@@ -106,7 +107,7 @@ function redactSecrets(value) {
     );
 }
 
-function prepareInput(pullRequest, changedFiles, maxInputChars) {
+export function prepareInput(pullRequest, changedFiles, maxInputChars) {
   const limitations = [];
   const analyzedFiles = [];
   const description = redactSecrets(String(pullRequest.body ?? "")).slice(0, 4000);
@@ -189,7 +190,7 @@ function prepareInput(pullRequest, changedFiles, maxInputChars) {
   return { context, limitations, analyzedFiles };
 }
 
-function validateReport(report, analyzedFiles, limitations, evidenceByFile) {
+export function validateReport(report, analyzedFiles, limitations, evidenceByFile) {
   const validLevels = new Set(["Low", "Medium", "High", "Critical"]);
   if (
     !report ||
@@ -274,7 +275,7 @@ function validateReport(report, analyzedFiles, limitations, evidenceByFile) {
   };
 }
 
-function findDiffEvidence(patch, evidence) {
+export function findDiffEvidence(patch, evidence) {
   const cleanEvidence = evidence
     .trim()
     .replace(/^```[^\n]*\n?/, "")
